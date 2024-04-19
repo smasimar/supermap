@@ -2,6 +2,7 @@ window.addEventListener('resize', drawDefinedShapes);
 document.addEventListener('DOMContentLoaded', drawDefinedShapes);
 
 const groups = {
+	'Super Earth': [[0,0],[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],[0,10],[0,11],[0,12],[0,13],[0,14],[0,15],[0,16],[0,17],[0,18],[0,19],[0,20],[0,21],[0,22],[0,23],[0,0]],
 	'Akira Sector': [[4,12],[5,12],[5,13],[7,13],[7,14],[4,14],[4,13],[4,12]],
 	'Alstrad Sector': [[5,15],[6,15],[6,16],[6,17],[5,17],[5,16],[5,15]],
 	'Altus Sector': [[0,0],[1,0],[1,1],[1,2],[1,3],[1,4],[1,5],[1,6],[0,6],[0,5],[0,4],[0,3],[0,2],[0,1],[0,0]],
@@ -71,50 +72,76 @@ function drawDefinedShapes() {
 
 	// Define Automaton pattern
 	const patternAutomatons = document.createElementNS(svgNS, 'pattern');
-	patternAutomatons.setAttribute('id', 'automatons');
+	patternAutomatons.setAttribute('id', 'Automatons');
 	patternAutomatons.setAttribute('patternUnits', 'userSpaceOnUse');
-	patternAutomatons.setAttribute('width', 24);
-	patternAutomatons.setAttribute('height', 24);
+	patternAutomatons.setAttribute('patternTransform', 'rotate(120)');
+	patternAutomatons.setAttribute('width', 20);
+	patternAutomatons.setAttribute('height', 20);
+	const patternAutomatonsRect = document.createElementNS(svgNS, 'rect');
+	patternAutomatonsRect.setAttribute('x', '0');
+	patternAutomatonsRect.setAttribute('y', '0');
+	patternAutomatonsRect.setAttribute('width', '100%');
+	patternAutomatonsRect.setAttribute('height', '100%');
+	patternAutomatonsRect.setAttribute('fill', '#87172D');
+	patternAutomatons.appendChild(patternAutomatonsRect);
 	const patternAutomatonsPath = document.createElementNS(svgNS, 'path');
-	patternAutomatonsPath.setAttribute('d', 'M-1,1 l2,-2 M0,24 l24,-24 M23,25 l2,-2');
-	patternAutomatonsPath.setAttribute('stroke', 'red');
-	patternAutomatonsPath.setAttribute('stroke-opacity', 0.5);
-	patternAutomatonsPath.setAttribute('stroke-width', 4);
+	patternAutomatonsPath.setAttribute('d', 'M0 10h20z');
+	patternAutomatonsPath.setAttribute('stroke', '#98394C');
+	patternAutomatonsPath.setAttribute('stroke-width', 8);
 	patternAutomatons.appendChild(patternAutomatonsPath);
 	svg.appendChild(patternAutomatons);
 
-	// Define a pattern
+	// Define Terminid pattern
 	const patternTerminids = document.createElementNS(svgNS, 'pattern');
-	patternTerminids.setAttribute('id', 'terminids');
+	patternTerminids.setAttribute('id', 'Terminids');
 	patternTerminids.setAttribute('patternUnits', 'userSpaceOnUse');
-	patternTerminids.setAttribute('width', 24);
-	patternTerminids.setAttribute('height', 24);
+	patternTerminids.setAttribute('patternTransform', 'rotate(120)');
+	patternTerminids.setAttribute('width', 20);
+	patternTerminids.setAttribute('height', 20);
+	const patternTerminidsRect = document.createElementNS(svgNS, 'rect');
+	patternTerminidsRect.setAttribute('x', '0');
+	patternTerminidsRect.setAttribute('y', '0');
+	patternTerminidsRect.setAttribute('width', '100%');
+	patternTerminidsRect.setAttribute('height', '100%');
+	patternTerminidsRect.setAttribute('fill', '#9E7229');
+	patternTerminids.appendChild(patternTerminidsRect);
 	const patternTerminidsPath = document.createElementNS(svgNS, 'path');
-	patternTerminidsPath.setAttribute('d', 'M-1,1 l2,-2 M0,24 l24,-24 M23,25 l2,-2');
-	patternTerminidsPath.setAttribute('stroke', 'orange');
-	patternTerminidsPath.setAttribute('stroke-width', 4);
+	patternTerminidsPath.setAttribute('d', 'M0 10h20z');
+	patternTerminidsPath.setAttribute('stroke', '#AC8748');
+	patternTerminidsPath.setAttribute('stroke-width', 8);
 	patternTerminids.appendChild(patternTerminidsPath);
 	svg.appendChild(patternTerminids);
 
-	// Define a pattern
+	// Define Illuminate pattern
 	const patternIlluminate = document.createElementNS(svgNS, 'pattern');
-	patternIlluminate.setAttribute('id', 'illuminate');
+	patternIlluminate.setAttribute('id', 'Illuminate');
 	patternIlluminate.setAttribute('patternUnits', 'userSpaceOnUse');
-	patternIlluminate.setAttribute('width', 24);
-	patternIlluminate.setAttribute('height', 24);
+	patternIlluminate.setAttribute('patternTransform', 'rotate(120)');
+	patternIlluminate.setAttribute('width', 20);
+	patternIlluminate.setAttribute('height', 20);
+	const patternIlluminateRect = document.createElementNS(svgNS, 'rect');
+	patternIlluminateRect.setAttribute('x', '0');
+	patternIlluminateRect.setAttribute('y', '0');
+	patternIlluminateRect.setAttribute('width', '100%');
+	patternIlluminateRect.setAttribute('height', '100%');
+	patternIlluminateRect.setAttribute('fill', '#172984');
+	patternIlluminate.appendChild(patternIlluminateRect);
 	const patternIlluminatePath = document.createElementNS(svgNS, 'path');
-	patternIlluminatePath.setAttribute('d', 'M-1,1 l2,-2 M0,24 l24,-24 M23,25 l2,-2');
-	patternIlluminatePath.setAttribute('stroke', 'blue');
-	patternIlluminatePath.setAttribute('stroke-width', 4);
+	patternIlluminatePath.setAttribute('d', 'M0 10h20z');
+	patternIlluminatePath.setAttribute('stroke', '#394896');
+	patternIlluminatePath.setAttribute('stroke-width', 8);
 	patternIlluminate.appendChild(patternIlluminatePath);
 	svg.appendChild(patternIlluminate);
+
 
 	// Draw the filled paths first
 	Object.entries(groups).forEach(([groupName, points]) => {
 		// Create the patter fill path
 		const sectorPatternPath = document.createElementNS(svgNS, 'path');
 		sectorPatternPath.setAttribute('d', getPathDescription(points, svgSize));
-		sectorPatternPath.setAttribute('fill', 'url(#automatons)'); // Replace with your solid color
+		sectorPatternPath.setAttribute('stroke', 'white');
+		sectorPatternPath.setAttribute('stroke-width', 4);
+		sectorPatternPath.setAttribute('fill', 'black'); // Replace with your solid color
 		// Attach the path to the SVG
 		svg.appendChild(sectorPatternPath);
 
@@ -130,14 +157,14 @@ function drawDefinedShapes() {
 		sectorStrokePath.setAttribute('d', getPathDescription(points, svgSize));
 		sectorStrokePath.setAttribute('fill', 'none');
 		sectorStrokePath.setAttribute('stroke', 'white');
-		sectorStrokePath.setAttribute('stroke-width', 4);
+		sectorStrokePath.setAttribute('stroke-width', 0);
 		svg.appendChild(sectorStrokePath);
 	});
 }
 
 function changeColor(sector) {
 	console.log(sector);
-	const colors = ['black', 'url(#automatons)', 'url(#terminids)', 'url(#illuminate)'];	
+	const colors = ['black', 'url(#Automatons)', 'url(#Terminids)', 'url(#Illuminate)'];	
 	const currentColor = sector.getAttribute('fill');
 	const currentIndex = colors.indexOf(currentColor);
 	const nextIndex = (currentIndex + 1) % colors.length;
