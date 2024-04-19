@@ -1,6 +1,5 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const exportSVGButton = document.getElementById('exportSVGButton');
-    exportSVGButton.addEventListener('click', exportSVG);
+document.getElementById('exportSVGButton').addEventListener('click', function() {
+    exportSVG();
 });
 
 function exportSVG() {
