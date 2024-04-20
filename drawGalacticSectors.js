@@ -1,7 +1,8 @@
 window.addEventListener('resize', drawDefinedShapes);
 document.addEventListener('DOMContentLoaded', drawDefinedShapes);
 
-const groups = {
+
+const sectors = {
 	'Super Earth': [[0,0],[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],[0,10],[0,11],[0,12],[0,13],[0,14],[0,15],[0,16],[0,17],[0,18],[0,19],[0,20],[0,21],[0,22],[0,23],[0,0]],
 	'Akira Sector': [[4,12],[5,12],[5,13],[7,13],[7,14],[4,14],[4,13],[4,12]],
 	'Alstrad Sector': [[5,15],[6,15],[6,16],[6,17],[5,17],[5,16],[5,15]],
@@ -59,142 +60,258 @@ const groups = {
 	'Ymir Sector': [[6,20],[8,20],[8,19],[9,19],[9,20],[9,21],[6,21],[6,20]]
 };
 
+const sectorNameShift = {
+	'Super Earth': [0,5.3],
+	'Akira Sector': [-12,5],
+	'Alstrad Sector': [-6.8,-5],
+	'Altus Sector': [6,0],
+	'Andromeda Sector': [-2.5,-5.5],
+	'Arturion Sector': [12,-6],
+	'Barnard Sector': [3,4.5],
+	'Borgus Sector': [4.5,3.5],
+	'Cancri Sector': [1,6.2],
+	'Cantolus Sector': [-6,0.2],
+	'Celeste Sector': [9,4],
+	'Draco Sector': [6.5,1.5],
+	'Falstaff Sector': [7,-4],
+	'Farsight Sector': [5,10],
+	'Ferris Sector': [-6,10],
+	'Gallux Sector': [6,7],
+	'Gellert Sector': [5,-6],
+	'Gothmar Sector': [-4.5,5.5],
+	'Guang Sector': [-7,4],
+	'Hanzo Sector': [-7,7],
+	'Hawking Sector': [6,-4],
+	'Hydra Sector': [3,-8],
+	'Idun Sector': [-7.5,0],
+	'Iptus Sector': [4,-6.5],
+	'Jin Xi Sector': [8.5,7.5],
+	'Kelvin Sector': [-0.4,-4.5],
+	'Korpus Sector': [7,3.5],
+	'L\'estrade Sector': [14,5],
+	'Lacaille Sector': [9,-7],
+	'Leo Sector': [-5,15],
+	'Marspira Sector': [-2,-7],
+	'Meridian Sector': [-7,-3],
+	'Mirin Sector': [6,0],
+	'Morgon Sector': [0,4],
+	'Nanos Sector': [1,-9],
+	'Omega Sector': [-4,9],
+	'Orion Sector': [8,-1],
+	'Quintus Sector': [-10,-1],
+	'Rictus Sector': [-9,2],
+	'Rigel Sector': [-2,9],
+	'Sagan Sector': [-3,-3],
+	'Saleria Sector': [-3.5,2],
+	'Severin Sector': [-9,-12],
+	'Sten Sector': [6,4.5],
+	'Talus Sector': [2.7,-9],
+	'Tanis Sector': [6,-8.5],
+	'Tarragon Sector': [-7,0],
+	'Theseus Sector': [-8,-2],
+	'Trigon Sector': [-1.5,-10],
+	'Umlaut Sector': [7.2,6],
+	'Ursa Sector': [6,5],
+	'Valdis Sector': [3,-10],
+	'Xi Tauri Sector': [3,12],
+	'Xzar Sector': [3,-14],
+	'Ymir Sector': [-5,-8],
+};
+
+const enemies = {
+	'Automatons'			: ['#87172D', '#98394C'],
+	'AutomatonsInactive'	: ['#440C16', '#4C1C26'],
+	'Terminids'				: ['#9E7229', '#AC8748'],
+	'TerminidsInactive'		: ['#4F3914', '#564424 '],
+	// 'Illuminate'			: ['#172984', '#394896'],
+	// 'IlluminateInactive'	: ['#0C1442', '#1C244B'],
+};
+
+const sectorColors = {};
+
 function drawDefinedShapes() {
 	const svgNS = 'http://www.w3.org/2000/svg';
 	const plot = document.getElementById('svgOverlay');
+	plot.innerHTML = ''; 
+
 	const svgSize = plot.clientWidth;
-
-	plot.innerHTML = ''; // Clear any existing SVG content
-
 	const svg = document.createElementNS(svgNS, 'svg');
 	svg.setAttribute('viewBox', `0 0 ${svgSize} ${svgSize}`);
 	plot.appendChild(svg);
 
-	// Define Automaton pattern
-	const patternAutomatons = document.createElementNS(svgNS, 'pattern');
-	patternAutomatons.setAttribute('id', 'Automatons');
-	patternAutomatons.setAttribute('patternUnits', 'userSpaceOnUse');
-	patternAutomatons.setAttribute('patternTransform', 'rotate(120)');
-	patternAutomatons.setAttribute('width', 20);
-	patternAutomatons.setAttribute('height', 20);
-	const patternAutomatonsRect = document.createElementNS(svgNS, 'rect');
-	patternAutomatonsRect.setAttribute('x', '0');
-	patternAutomatonsRect.setAttribute('y', '0');
-	patternAutomatonsRect.setAttribute('width', '100%');
-	patternAutomatonsRect.setAttribute('height', '100%');
-	patternAutomatonsRect.setAttribute('fill', '#87172D');
-	patternAutomatons.appendChild(patternAutomatonsRect);
-	const patternAutomatonsPath = document.createElementNS(svgNS, 'path');
-	patternAutomatonsPath.setAttribute('d', 'M0 10h20z');
-	patternAutomatonsPath.setAttribute('stroke', '#98394C');
-	patternAutomatonsPath.setAttribute('stroke-width', 8);
-	patternAutomatons.appendChild(patternAutomatonsPath);
-	svg.appendChild(patternAutomatons);
+	// Scaling for text and Super Earth logo
+	const fontSize = svgSize / 85; 
+	const embedSvgSize = 90;
 
-	// Define Terminid pattern
-	const patternTerminids = document.createElementNS(svgNS, 'pattern');
-	patternTerminids.setAttribute('id', 'Terminids');
-	patternTerminids.setAttribute('patternUnits', 'userSpaceOnUse');
-	patternTerminids.setAttribute('patternTransform', 'rotate(120)');
-	patternTerminids.setAttribute('width', 20);
-	patternTerminids.setAttribute('height', 20);
-	const patternTerminidsRect = document.createElementNS(svgNS, 'rect');
-	patternTerminidsRect.setAttribute('x', '0');
-	patternTerminidsRect.setAttribute('y', '0');
-	patternTerminidsRect.setAttribute('width', '100%');
-	patternTerminidsRect.setAttribute('height', '100%');
-	patternTerminidsRect.setAttribute('fill', '#9E7229');
-	patternTerminids.appendChild(patternTerminidsRect);
-	const patternTerminidsPath = document.createElementNS(svgNS, 'path');
-	patternTerminidsPath.setAttribute('d', 'M0 10h20z');
-	patternTerminidsPath.setAttribute('stroke', '#AC8748');
-	patternTerminidsPath.setAttribute('stroke-width', 8);
-	patternTerminids.appendChild(patternTerminidsPath);
-	svg.appendChild(patternTerminids);
+	// Include font-face definition
+	const style = document.createElementNS(svgNS, 'style');
+	style.textContent = `
+	@font-face {
+		font-family: 'FS Sinclair';
+		src: url('FS Sinclair Regular.otf');
+		font-weight: normal;
+	}
+	@font-face {
+		font-family: 'FS Sinclair';
+		src: url('FS Sinclair Bold.otf');
+		font-weight: bold;
+	}`;
+	svg.appendChild(style);
 
-	// Define Illuminate pattern
-	const patternIlluminate = document.createElementNS(svgNS, 'pattern');
-	patternIlluminate.setAttribute('id', 'Illuminate');
-	patternIlluminate.setAttribute('patternUnits', 'userSpaceOnUse');
-	patternIlluminate.setAttribute('patternTransform', 'rotate(120)');
-	patternIlluminate.setAttribute('width', 20);
-	patternIlluminate.setAttribute('height', 20);
-	const patternIlluminateRect = document.createElementNS(svgNS, 'rect');
-	patternIlluminateRect.setAttribute('x', '0');
-	patternIlluminateRect.setAttribute('y', '0');
-	patternIlluminateRect.setAttribute('width', '100%');
-	patternIlluminateRect.setAttribute('height', '100%');
-	patternIlluminateRect.setAttribute('fill', '#172984');
-	patternIlluminate.appendChild(patternIlluminateRect);
-	const patternIlluminatePath = document.createElementNS(svgNS, 'path');
-	patternIlluminatePath.setAttribute('d', 'M0 10h20z');
-	patternIlluminatePath.setAttribute('stroke', '#394896');
-	patternIlluminatePath.setAttribute('stroke-width', 8);
-	patternIlluminate.appendChild(patternIlluminatePath);
-	svg.appendChild(patternIlluminate);
+	// Create SVG patterns for each enemy type
+	Object.entries(enemies).forEach(([enemyName, enemyColors]) => {
+		createPattern(svg, enemyName, enemyColors[0], enemyColors[1]);
+	});
 
-
-	// Draw the filled paths first
-	Object.entries(groups).forEach(([groupName, points]) => {
-		// Create the patter fill path
+	// Draw the sectors first
+	Object.entries(sectors).forEach(([sectorName, points]) => {
+		// Create the pattern fill path
 		const sectorPatternPath = document.createElementNS(svgNS, 'path');
+		const currentColor = sectorColors[sectorName] || 'black';
+		sectorPatternPath.setAttribute('data-name', sectorName)
 		sectorPatternPath.setAttribute('d', getPathDescription(points, svgSize));
 		sectorPatternPath.setAttribute('stroke', 'white');
 		sectorPatternPath.setAttribute('stroke-width', 4);
-		sectorPatternPath.setAttribute('fill', 'black'); // Replace with your solid color
+		sectorPatternPath.setAttribute('fill', currentColor);
 		// Attach the path to the SVG
 		svg.appendChild(sectorPatternPath);
 
 		// Attach event listener to the group for changing color
 		sectorPatternPath.addEventListener('click', function() {
 			changeColor(sectorPatternPath);
+			drawDefinedShapes();
 		});
 	});
 
-	// Draw the strokes in a separate pass, so they are on top of the filled paths
-	Object.entries(groups).forEach(([groupName, points]) => {
+	// Draw the sector outlines and sector names in a separate pass, so they are on top of the filled sectors
+	Object.entries(sectors).forEach(([sectorName, points]) => {
+		// Add outlines of the sectors
 		const sectorStrokePath = document.createElementNS(svgNS, 'path');
 		sectorStrokePath.setAttribute('d', getPathDescription(points, svgSize));
 		sectorStrokePath.setAttribute('fill', 'none');
 		sectorStrokePath.setAttribute('stroke', 'white');
 		sectorStrokePath.setAttribute('stroke-width', 0);
 		svg.appendChild(sectorStrokePath);
+
+		if (sectorName !== 'Super Earth') {
+			// Add text label for the sector
+			const sectorText = document.createElementNS(svgNS, 'text');
+			const currentColor = sectorColors[sectorName] || 'black';
+			const shift = sectorNameShift[sectorName] || [0, 0];
+			const firstPointCoords = getRingPointCoordinates(points[0]);
+			const shiftX = svgSize * shift[0] / 100;
+			const shiftY = svgSize * shift[1] / 100;
+
+			sectorText.setAttribute('x', firstPointCoords.x + shiftX);
+			sectorText.setAttribute('y', firstPointCoords.y + shiftY);
+
+			sectorText.setAttribute('font-size', fontSize);
+			sectorText.setAttribute('text-anchor', 'middle'); 
+			sectorText.setAttribute('fill', 'white');
+			sectorText.setAttribute('font-family', 'FS Sinclair');
+			sectorText.setAttribute('font-weight', currentColor !== 'black' ? 'bold' : 'normal');
+			
+			// Create the tspan for the sector name (excluding the word 'Sector')
+			const tspanName = document.createElementNS(svgNS, 'tspan');
+			tspanName.textContent = sectorName.replace(' Sector', '');
+			sectorText.appendChild(tspanName);
+
+			// Create the tspan for the word 'Sector'
+			const tspanSector = document.createElementNS(svgNS, 'tspan');
+			tspanSector.setAttribute('x', sectorText.getAttribute('x')); // Align with the first tspan
+			tspanSector.setAttribute('dy', '1.2em'); // Shift the 'Sector' text to the next line
+			tspanSector.textContent = 'Sector';
+			sectorText.appendChild(tspanSector)
+			svg.appendChild(sectorText);
+		}
 	});
-}
 
+	// Now embed the 'Super Earth White.svg' at the center
+	const centerX = svgSize / 2;
+	const centerY = svgSize / 2;
+
+	const image = document.createElementNS(svgNS, 'image');
+	image.setAttributeNS('http://www.w3.org/1999/xlink', 'href', 'Super Earth White.svg');
+	image.setAttribute('x', centerX - embedSvgSize / 2); // Center the image
+	image.setAttribute('y', centerY - embedSvgSize / 2);
+	image.setAttribute('width', embedSvgSize);
+	image.setAttribute('height', embedSvgSize);
+	svg.appendChild(image);
+
+};
+
+// This function create a striped SVG pattern definition.
+function createPattern(svg, id, color, stripeColor) {
+	const svgNS = 'http://www.w3.org/2000/svg';
+	const pattern = document.createElementNS(svgNS, 'pattern');
+	pattern.setAttribute('id', id);
+	pattern.setAttribute('patternUnits', 'userSpaceOnUse');
+	pattern.setAttribute('patternTransform', 'rotate(120)');
+	pattern.setAttribute('width', 20);
+	pattern.setAttribute('height', 20);
+	const rect = document.createElementNS(svgNS, 'rect');
+	rect.setAttribute('width', '100%');
+	rect.setAttribute('height', '100%');
+	rect.setAttribute('fill', color);
+	pattern.appendChild(rect);
+	const path = document.createElementNS(svgNS, 'path');
+	path.setAttribute('d', 'M0 10h20z');
+	path.setAttribute('stroke', stripeColor);
+	path.setAttribute('stroke-width', 8);
+	pattern.appendChild(path);
+	svg.appendChild(pattern);
+	return pattern;
+};
+
+// This funtion changes sector fill type.
 function changeColor(sector) {
-	console.log(sector);
-	const colors = ['black', 'url(#Automatons)', 'url(#Terminids)', 'url(#Illuminate)'];	
-	const currentColor = sector.getAttribute('fill');
-	const currentIndex = colors.indexOf(currentColor);
-	const nextIndex = (currentIndex + 1) % colors.length;
-	sector.setAttribute('fill', colors[nextIndex]);
+	const sectorName = sector.getAttribute('data-name'); // Ensure you set this attribute when creating the path
+	const colors = ['black', 'url(#AutomatonsInactive)', 'url(#Automatons)', 'url(#TerminidsInactive)', 'url(#Terminids)'];
+	const currentColorIndex = sectorColors[sectorName] ? colors.indexOf(sectorColors[sectorName]) : 0;
+	const nextColorIndex = (currentColorIndex + 1) % colors.length;
+	const nextColor = colors[nextColorIndex];
+
+	sector.setAttribute('fill', nextColor);
+	sectorColors[sectorName] = nextColor; // Store the new color in the state object
 }
 
+// This function generates the SVG path data for a set of points representing a sector.
 function getPathDescription(points) {
+	// Constants for the number of rings and points per ring
 	const numberOfRings = 10;
 	const numberOfPointsPerRing = 24;
+	// Get the size of the SVG overlay for scaling the sectors correctly
 	const svgSize = document.getElementById('svgOverlay').clientWidth;
+	// Initialize an array to hold the SVG path commands
 	const pathCommands = [];
 
+	// Loop through each point in the array of points
 	points.forEach((point, i) => {
+		// Destructure the point to get ringIndex and pointIndex
 		const [ringIndex, pointIndex] = point;
+		// Calculate the radius for the current ring
 		const radius = ((ringIndex + 1) / numberOfRings) * (svgSize / 2);
+		// Get the Cartesian coordinates for the current point
 		const coords = getRingPointCoordinates(point);
 
+		// If it's the first point, move the path to this point (M command)
 		if (i === 0) {
 			pathCommands.push(`M${coords.x},${coords.y}`);
 		} else {
+			// Get the previous point and its coordinates
 			const prevPoint = points[i - 1];
 			const prevCoords = getRingPointCoordinates(prevPoint);
 
+			// Check if the current point is on the same ring as the previous point
 			if (ringIndex === prevPoint[0]) {
-				// Both points are on the same ring
+				// Initialize the sweepFlag as 1 (default for clockwise arc)
 				let sweepFlag = 1;
+				// Calculate the difference in the point index between current and previous points
 				const delta = pointIndex - prevPoint[1];
+				// Initialize the largeArcFlag as 0 (default for arc less than 180 degrees)
 				let largeArcFlag = 0;
 
-				// Normalize delta to be within -12 to 12 range
+				// Normalize delta to be within -12 to 12 range for proper arc direction
 				let normalizedDelta = delta % numberOfPointsPerRing;
 				if (normalizedDelta > numberOfPointsPerRing / 2) {
 					normalizedDelta -= numberOfPointsPerRing;
@@ -202,40 +319,56 @@ function getPathDescription(points) {
 					normalizedDelta += numberOfPointsPerRing;
 				}
 
-				// Set flags based on normalized delta
+				// Set largeArcFlag to 1 for arcs spanning more than half the circle
 				largeArcFlag = Math.abs(normalizedDelta) > numberOfPointsPerRing / 2 ? 1 : 0;
+				// Set sweepFlag to 0 for counter-clockwise arcs
 				sweepFlag = normalizedDelta > 0 ? 1 : 0;
 
+				// Add the arc command to the path
 				pathCommands.push(`A${radius},${radius} 0 ${largeArcFlag},${sweepFlag} ${coords.x},${coords.y}`);
 			} else {
-				// Points are on different rings
+				// If the points are on different rings, draw a line to the current point
 				pathCommands.push(`L${coords.x},${coords.y}`);
 			}
 		}
 	});
 
-	// Automatically close the path by connecting the last and first points
+	// If the path is a closed loop, draw a line to the first point to close the path
 	if (points.length > 1 && points[0][0] === points[points.length - 1][0]) {
 		const firstCoords = getRingPointCoordinates(points[0]);
 		pathCommands.push(`L${firstCoords.x},${firstCoords.y}`);
 	}
 
+	// Join all the path commands into a single string and close the path with 'Z'
 	return pathCommands.join(' ') + ' Z';
-}
+};
 
+// This function takes polar coordinates (ring and point index) and converts them into Cartesian (x, y) coordinates.
 function getRingPointCoordinates([ringIndex, pointIndex]) {
+	// Define the total number of rings and the number of points per ring.
 	const numberOfRings = 10;
 	const numberOfPointsPerRing = 24;
+	// Retrieve the current width of the SVG overlay, which will scale the size of the rings.
 	const svgSize = document.getElementById('svgOverlay').clientWidth;
-	const radius = ((ringIndex + 1) / numberOfRings) * (svgSize / 2)*0.886;
+	// Calculate the radius for the given ring index. 
+	const radius = ((ringIndex + 1) / numberOfRings) * (svgSize / 2);
+	// Convert the point index to an angle in degrees. One full cycle (0 to 360 degrees) is divided
+	// by the total number of points per ring to find the angle for the specific point index.
 	const angleDegrees = (pointIndex / numberOfPointsPerRing) * 360;
+	// Call the polarToCartesian function to convert the polar coordinates (radius and angle) to Cartesian coordinates.
 	return polarToCartesian(svgSize / 2, svgSize / 2, radius, angleDegrees);
-}
+};
 
+// This function converts polar coordinates to Cartesian coordinates.
 function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
+	// Adjust the angle from degrees to radians since JavaScript's Math functions use radians.
+	// The angle is also adjusted by -90 degrees to align 0 degrees with the top of the circle.
 	const angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
+	// Calculate the x and y coordinates using the cosine and sine of the angle, respectively.
+	// The center of the circle (centerX, centerY) is added to the result to translate the coordinates
+	// appropriately within the SVG canvas.
 	return {
 		x: centerX + (radius * Math.cos(angleInRadians)),
 		y: centerY + (radius * Math.sin(angleInRadians))
 	};
-}
+};
