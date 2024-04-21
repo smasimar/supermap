@@ -134,15 +134,15 @@ function drawDefinedShapes() {
 	const plot = document.getElementById('svgOverlay');
 	plot.innerHTML = ''; 
 
-	const svgSize = plot.clientWidth;
+	// const svgSize = plot.clientWidth;
+	const svgSize = 2000
 	const svg = document.createElementNS(svgNS, 'svg');
 	svg.setAttribute('viewBox', `0 0 ${svgSize} ${svgSize}`);
 	plot.appendChild(svg);
 
 	// Scaling for text and Super Earth logo
 	const fontSize = svgSize / 85; 
-	const embedSvgSize = 90;
-
+	
 	// Include font-face definition
 	const style = document.createElementNS(svgNS, 'style');
 	style.textContent = `
@@ -227,15 +227,16 @@ function drawDefinedShapes() {
 	});
 
 	// Now embed the 'Super Earth White.svg' at the center
-	const centerX = svgSize / 2;
-	const centerY = svgSize / 2;
+	const embedSvgScale = 15;
+	const centerX = (svgSize / 2) - ((svgSize / embedSvgScale) / 2);
+	const centerY = (svgSize / 2) - ((svgSize / embedSvgScale) / 2);
 
 	const image = document.createElementNS(svgNS, 'image');
 	image.setAttributeNS('http://www.w3.org/1999/xlink', 'href', 'Super Earth White.svg');
-	image.setAttribute('x', centerX - embedSvgSize / 2); // Center the image
-	image.setAttribute('y', centerY - embedSvgSize / 2);
-	image.setAttribute('width', embedSvgSize);
-	image.setAttribute('height', embedSvgSize);
+	image.setAttribute('x', centerX); // Center the image
+	image.setAttribute('y', centerY);
+	image.setAttribute('width', svgSize / embedSvgScale);
+	image.setAttribute('height', svgSize / embedSvgScale);
 	svg.appendChild(image);
 
 };
@@ -281,7 +282,8 @@ function getPathDescription(points) {
 	const numberOfRings = 10;
 	const numberOfPointsPerRing = 24;
 	// Get the size of the SVG overlay for scaling the sectors correctly
-	const svgSize = document.getElementById('svgOverlay').clientWidth;
+	// const svgSize = document.getElementById('svgOverlay').clientWidth;
+	const svgSize = 2000
 	// Initialize an array to hold the SVG path commands
 	const pathCommands = [];
 
@@ -349,7 +351,8 @@ function getRingPointCoordinates([ringIndex, pointIndex]) {
 	const numberOfRings = 10;
 	const numberOfPointsPerRing = 24;
 	// Retrieve the current width of the SVG overlay, which will scale the size of the rings.
-	const svgSize = document.getElementById('svgOverlay').clientWidth;
+	// const svgSize = document.getElementById('svgOverlay').clientWidth;
+	const svgSize = 2000
 	// Calculate the radius for the given ring index. 
 	const radius = ((ringIndex + 1) / numberOfRings) * (svgSize / 2);
 	// Convert the point index to an angle in degrees. One full cycle (0 to 360 degrees) is divided
