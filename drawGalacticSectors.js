@@ -230,16 +230,37 @@ function drawDefinedShapes() {
 	const embedSvgScale = 15;
 	const centerX = (svgSize / 2) - ((svgSize / embedSvgScale) / 2);
 	const centerY = (svgSize / 2) - ((svgSize / embedSvgScale) / 2);
-
-	const image = document.createElementNS(svgNS, 'image');
-	image.setAttributeNS('http://www.w3.org/1999/xlink', 'href', 'Super Earth White.svg');
-	image.setAttribute('x', centerX); // Center the image
-	image.setAttribute('y', centerY);
-	image.setAttribute('width', svgSize / embedSvgScale);
-	image.setAttribute('height', svgSize / embedSvgScale);
-	svg.appendChild(image);
+	embedExternalSvg(svg, svgNS, svgSize, centerX, centerY, embedSvgScale, 'Super Earth White.svg');
 
 };
+
+function embedExternalSvg(svg, svgNS, svgSize, centerX, centerY, scale, fileName) {
+    // Use fetch API to get SVG content
+    fetch(fileName)
+        .then(response => response.text())
+        .then(data => {
+            // Create a DOM parser to parse the SVG content
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(data, "image/svg+xml");
+            
+            // Get the SVG root element from the parsed document
+            const externalSvg = doc.documentElement;
+            
+            // Set the x, y, width, and height attributes to position it
+            externalSvg.setAttribute('x', centerX);
+            externalSvg.setAttribute('y', centerY);
+            externalSvg.setAttribute('width', svgSize / scale);
+            externalSvg.setAttribute('height', svgSize / scale);
+            
+            // Remove any unwanted attributes that might affect positioning or visibility
+            externalSvg.removeAttribute('xmlns');
+            externalSvg.removeAttribute('xmlns:xlink');
+
+            // Append the SVG content to the main SVG
+            svg.appendChild(externalSvg);
+        })
+        .catch(error => console.error('Error loading the SVG:', error));
+}
 
 // This function create a striped SVG pattern definition.
 function createPattern(svg, id, color, stripeColor) {
