@@ -286,9 +286,9 @@ const enemies = {
     'Automatons'            : ['#87172D', '#98394C'],
     'AutomatonsInactive'    : ['#440C16', '#4C1C26'],
     'Terminids'             : ['#9E7229', '#AC8748'],
-    'TerminidsInactive'     : ['#4F3914', '#564424 '],
-    // 'Illuminate'         : ['#172984', '#394896'],
-    // 'IlluminateInactive' : ['#0C1442', '#1C244B'],
+    'TerminidsInactive'     : ['#4F3914', '#564424'],
+    'Illuminate'            : ['#3A1782', '#563893'],
+    'IlluminateInactive'    : ['#1D0C3F', '#2B1C49'],
 };
 
 // Cache for the external SVG content
@@ -425,7 +425,7 @@ function embedExternalSvg(svg, svgNS, svgSize, fileName) {
 
 function changeColor(sector) {
     const sectorName = sector.getAttribute('data-name');
-    const colors = ['black', 'url(#AutomatonsInactive)', 'url(#Automatons)', 'url(#TerminidsInactive)', 'url(#Terminids)'];
+    const colors = ['black', 'url(#AutomatonsInactive)', 'url(#Automatons)', 'url(#TerminidsInactive)', 'url(#Terminids)', 'url(#IlluminateInactive)', 'url(#Illuminate)'];
     const currentColor = sectorData[sectorName].color || 'black';
     const nextColor = colors[(colors.indexOf(currentColor) + 1) % colors.length];
     sectorData[sectorName].color = nextColor;
